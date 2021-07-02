@@ -52,6 +52,11 @@ namespace LaunchDarkly.Unity
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
+        public void OnApplicationQuit() {
+            ldClient.Dispose();
+            ldClient = null;
+        }
+
         public void Update()
         {
             if (isMockMode)
@@ -87,13 +92,14 @@ namespace LaunchDarkly.Unity
             Configuration ldConfiguration = Configuration.Builder(mobileKey).Build();
             RefreshUserAttributes();
             User ldUser = userBuilder.Build();
-            Debug.LogError("LDCB::Initialize creating LdClient via Init");
+            Debug.Log("LDCB::Initialize creating LdClient via Init.");
             if (ldClient == null)
             {
                 ldClient = LdClient.Init(ldConfiguration, ldUser, System.TimeSpan.FromMilliseconds(connectionTimeoutMS));
             }
             else
             {
+                Debug.LogWarning("LDCB::Initialize already initialized. Disposing existing SDK and recreating LdClient.");
                 ldClient.Dispose();
                 ldClient = LdClient.Init(ldConfiguration, ldUser, System.TimeSpan.FromMilliseconds(connectionTimeoutMS * 2));
             }
