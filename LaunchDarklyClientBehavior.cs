@@ -55,6 +55,7 @@ namespace LaunchDarkly.Unity
         public void OnApplicationQuit() {
             ldClient.Dispose();
             ldClient = null;
+            ClearInvalidCallbacks();
         }
 
         public void Update()
